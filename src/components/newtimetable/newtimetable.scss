@@ -1,0 +1,60 @@
+.newTimetableFormWrapper {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+
+  background-color: var(--bg-color-active);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .form {
+    background-color: var(--bg-color-main);
+    display: flex;
+    flex-direction: column;
+    gap: 2em;
+    border-radius: var(--border-radius);
+    padding: 1.5em;
+
+    .form__header {
+      h1 {
+        font-size: 1.8rem;
+      }
+      p {
+        color: var(--color-secondary);
+      }
+    }
+
+    .form__fields {
+      display: flex;
+      flex-direction: column;
+      gap: 1em;
+
+      .form__fields--label {
+        font-size: 0.9rem;
+        font-weight: 500;
+      }
+
+      .form__fields--textarea {
+        padding: 1em;
+        border: 1px solid var(--border-color);
+        border-radius: var(--border-radius);
+      }
+      .form__fields--textarea:hover {
+        border: 1px solid var(--color-secondary);
+      }
+      .form__fields--textarea:focus {
+        border: 2px solid var(--border-color-focus);
+        padding: 0.95em;
+      }
+
+      .form__fields--textarea {
+        font-size: 0.9rem;
+      }
+    }
+  }
+}

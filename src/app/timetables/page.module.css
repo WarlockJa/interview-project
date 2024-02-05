@@ -1,0 +1,24 @@
+.timetables {
+  .timetable__tableWrapper {
+    padding: 0 2em;
+
+    .timetable__header {
+      padding: 2em 0;
+      display: flex;
+      justify-content: space-between;
+    }
+    .timetableCell {
+      font-size: 1rem;
+    }
+
+    .timetableHeaderCell {
+      opacity: 0.6;
+      font-weight: bold;
+    }
+
+    .timetable__task {
+      display: flex;
+      gap: 0.8em;
+    }
+  }
+}

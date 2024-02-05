@@ -1,0 +1,35 @@
+.menu {
+  height: 100vh;
+  height: 100dvh;
+  width: var(--menu-width);
+
+  border-right: 1px solid var(--border-color);
+  background-color: var(--bg-color-secondary);
+
+  .menu--item {
+    display: flex;
+    align-items: center;
+    padding: 0.5em 1em;
+    gap: 1em;
+  }
+  .menu__header {
+    height: var(--searchbar-height);
+    border-bottom: 1px solid var(--border-color);
+    padding: 1.5em;
+  }
+
+  .menu__nav--item {
+    transition: color 300ms ease, background 300ms ease;
+    color: var(--color-secondary);
+    cursor: pointer;
+    margin: 0 0.5em;
+    border-radius: 0.5em;
+  }
+  .menu__nav--item:hover {
+    color: var(--color-main);
+  }
+  .menu__nav--active {
+    color: var(--color-main);
+    background-color: var(--bg-color-active);
+  }
+}
