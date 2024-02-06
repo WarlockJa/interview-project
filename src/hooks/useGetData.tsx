@@ -9,7 +9,7 @@ export default function useGetData() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/api/v1/db")
+    fetch("/api/v1/db", { cache: "force-cache" })
       .then((response) => response.json())
       .then((result) => {
         setLoading(false);

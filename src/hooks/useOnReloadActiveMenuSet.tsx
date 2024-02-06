@@ -1,11 +1,12 @@
 import { activeMenuAtom } from "@/lib/jotai";
 import { useAtom } from "jotai";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 // assigning initial atom state for activeMenu based on pathname
 export default function useOnReloadActiveMenuSet() {
   const pathname = usePathname();
+  const router = useRouter();
   const [, setActiveMenu] = useAtom(activeMenuAtom);
 
   useEffect(() => {
@@ -27,6 +28,7 @@ export default function useOnReloadActiveMenuSet() {
         break;
       default:
         setActiveMenu(0);
+        router.push("/home");
         break;
     }
   }, []);
