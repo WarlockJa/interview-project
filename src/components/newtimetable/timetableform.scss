@@ -6,19 +6,34 @@
   bottom: 0;
   z-index: 2;
 
-  background-color: var(--bg-color-active);
+  backdrop-filter: blur(2px);
 
   display: flex;
   align-items: center;
   justify-content: center;
 
   .form {
+    position: relative;
     background-color: var(--bg-color-main);
     display: flex;
     flex-direction: column;
     gap: 2em;
     border-radius: var(--border-radius);
     padding: 1.5em;
+    border: 1px solid var(--border-color);
+
+    .form--spinnerWrapper {
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(2px);
+      z-index: 2;
+    }
 
     .form__header {
       h1 {

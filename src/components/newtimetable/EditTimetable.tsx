@@ -1,4 +1,4 @@
-import { showAddTimetableAtom, timeTablesDataAtom } from "@/lib/jotai";
+import { showEditTimetableAtom, timeTablesDataAtom } from "@/lib/jotai";
 import "./timetableform.scss";
 import { useAtom } from "jotai";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
@@ -9,25 +9,35 @@ import { useState } from "react";
 import dayjs, { Dayjs } from "dayjs";
 import { TextField } from "@mui/material";
 import { schemaApiV1dbPOST } from "@/lib/validators/db";
-import { TSchemaApiV1dbPOST } from "@/lib/validators/schemaTypes";
-import { createId } from "@paralleldrive/cuid2";
-import createTimetable from "@/lib/db/createTimetable";
+import updateTimetable from "@/lib/db/updateTimetable";
 
-export default function NewTimetable() {
+export default function EditTimetable() {
   // atom state flag for add new timetable dialog display
-  const [, setShowAddTimetable] = useAtom(showAddTimetableAtom);
+  const [showEditTimetable, setShowEditTimetable] = useAtom(
+    showEditTimetableAtom
+  );
   // timetables store data
-  const [, setTimetablesData] = useAtom(timeTablesDataAtom);
+  const [timetablesData, setTimetablesData] = useAtom(timeTablesDataAtom);
+
+  const currentTimetableData = timetablesData.find(
+    (item) => item.id === showEditTimetable.id
+  );
+  // timetable with the given ID not found
+  // closing edit dialog
+  if (!currentTimetableData) {
+    setShowEditTimetable({ show: false, id: "" });
+    return;
+  }
 
   const [value, setValue] = useState<DateRange<Dayjs>>(() => [
-    dayjs(new Date()),
-    dayjs(new Date(Date.now() + 2 * 60 * 60 * 1000)),
+    dayjs(currentTimetableData.timeStart),
+    dayjs(currentTimetableData.timeEnd),
   ]);
 
   // detecting Escape press to close new timetable window
   const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     // preventing closing add new task window if POST request is running
-    if (e.key === "Escape") setShowAddTimetable(false);
+    if (e.key === "Escape") setShowEditTimetable({ show: false, id: "" });
   };
 
   // processing form submit
@@ -58,31 +68,36 @@ export default function NewTimetable() {
       ) as unknown as IDayjsFormat
     ).$d;
 
-    const id = createId();
-    // validating data
-    const formDataToParse: TSchemaApiV1dbPOST = {
-      // form data validation with zod models
-      id,
+    const newTimetable = {
+      id: currentTimetableData.id,
       serviceName: formService,
       timeStart,
       timeEnd,
       details: formDetails ? formDetails : "",
     };
+    // checking that changes has been made to the timetable data
+    if (JSON.stringify(currentTimetableData) !== JSON.stringify(newTimetable)) {
+      // changes has been made
+      // validating data
+      const validData = schemaApiV1dbPOST.parse(newTimetable);
 
-    const validData = schemaApiV1dbPOST.parse(formDataToParse);
-    // TODO add form notifications based on validation errors
+      // store data optimistic update
+      setTimetablesData((prev) => [
+        ...prev.filter((item) => item.id !== validData.id),
+        validData,
+      ]);
 
-    setTimetablesData((prev) => [...prev, validData]);
-    // writing result to the DB
-    createTimetable(validData);
+      // updating data in DB
+      updateTimetable(validData);
+    } // else no changes has been made. closing edit dialog
     // closing add timetable form
-    setShowAddTimetable(false);
+    setShowEditTimetable({ show: false, id: "" });
   };
 
   return (
     <div
       className="newTimetableFormWrapper"
-      onClick={() => setShowAddTimetable(false)}
+      onClick={() => setShowEditTimetable({ show: false, id: "" })}
       onKeyDown={(e) => handleKeyDown(e)}
     >
       <form
@@ -91,8 +106,8 @@ export default function NewTimetable() {
       >
         <fieldset className="form">
           <div className="form__header">
-            <h1>Add New Timetable</h1>
-            <p>Enter the details of the new timetable.</p>
+            <h1>Update Timetable</h1>
+            <p>Edit the details of the timetable.</p>
           </div>
           <div className="form__fields">
             <label className="form__fields--label" htmlFor="input-service">
@@ -100,6 +115,7 @@ export default function NewTimetable() {
             </label>
             <TextField
               id="input-service"
+              defaultValue={currentTimetableData.serviceName}
               name="formService"
               label="Enter the service name"
               variant="outlined"
@@ -112,7 +128,11 @@ export default function NewTimetable() {
               <DemoContainer
                 components={["DateTimePicker", "SingleInputTimeRangeField"]}
               >
-                <DatePicker label="Select day" name="formDate" />
+                <DatePicker
+                  label="Select day"
+                  name="formDate"
+                  defaultValue={dayjs(currentTimetableData.timeStart)}
+                />
                 <SingleInputTimeRangeField
                   id="input-time"
                   name="formTime"
@@ -127,13 +147,14 @@ export default function NewTimetable() {
             </label>
             <textarea
               className="form__fields--textarea"
+              defaultValue={currentTimetableData.details}
               id="input-details"
               name="formDetails"
               placeholder="Enter any additional details"
             />
           </div>
           <button type="submit" className="buttonType1">
-            Add Timetable
+            Update Timetable
           </button>
         </fieldset>
       </form>

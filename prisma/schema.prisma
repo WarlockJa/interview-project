@@ -11,9 +11,9 @@ datasource db {
 }
 
 model task {
-  id        String   @id @default(cuid())
-  name      String
-  startTime DateTime
-  endTime   DateTime
-  details   String
+  id          String   @id @default(cuid())
+  serviceName String
+  timeStart   DateTime
+  timeEnd     DateTime
+  details     String
 }

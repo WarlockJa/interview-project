@@ -1,0 +1,3 @@
+interface IDayjsFormat {
+  $d: Date;
+}

@@ -21,4 +21,14 @@
       gap: 0.8em;
     }
   }
+
+  .spinnerWrapper {
+    height: 100vh;
+    height: 100vdh;
+    width: calc(100vw - var(--menu-width));
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 }
