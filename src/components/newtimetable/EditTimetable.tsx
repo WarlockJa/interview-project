@@ -22,17 +22,19 @@ export default function EditTimetable() {
   const currentTimetableData = timetablesData.find(
     (item) => item.id === showEditTimetable.id
   );
+
+  // Datepicker state
+  const [value, setValue] = useState<DateRange<Dayjs>>(() => [
+    dayjs(currentTimetableData ? currentTimetableData.timeStart : Date.now()),
+    dayjs(currentTimetableData ? currentTimetableData.timeEnd : Date.now()),
+  ]);
+
   // timetable with the given ID not found
   // closing edit dialog
   if (!currentTimetableData) {
     setShowEditTimetable({ show: false, id: "" });
     return;
   }
-
-  const [value, setValue] = useState<DateRange<Dayjs>>(() => [
-    dayjs(currentTimetableData.timeStart),
-    dayjs(currentTimetableData.timeEnd),
-  ]);
 
   // detecting Escape press to close new timetable window
   const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
